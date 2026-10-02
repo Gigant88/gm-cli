@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  buildApplication,
-  buildRouteMap,
-  help,
-  text_en,
-  version as stricliVersion,
-} from "@stricli/core";
+import { buildApplication, buildRouteMap, text_en } from "@stricli/core";
 import { version, description } from "../package.json";
 import { initCommand } from "./commands/init/command";
 import { compileProjectCommand } from "./commands/compile/command";
@@ -33,8 +27,6 @@ import { KnownError } from "./error";
 import { getLatestVersion } from "./get-latest-version";
 import { manualCommand } from "./commands/manual/command";
 import { cacheCommand } from "./commands/cache/command";
-import { plainTaskLogger } from "./log";
-import type { Context } from "./context";
 
 const routes = buildRouteMap({
   routes: {
@@ -53,79 +45,35 @@ const routes = buildRouteMap({
   },
 });
 
-export const app = buildApplication(
-  routes,
-  {
-    name: "gm-cli",
-    versionInfo: {
-      currentVersion: version,
-      getLatestVersion,
-      upgradeCommand: "npm install -g @gamemaker/gm-cli",
-    },
-    documentation: {
-      caseStyle: "convert-camel-to-kebab",
-      onlyRequiredInUsageLine: true,
-    },
-    scanner: {
-      caseStyle: "allow-kebab-for-camel",
-    },
-    localization: {
-      loadText() {
-        return {
-          ...text_en,
-          exceptionWhileRunningCommand(exc: unknown, _ansiColor: boolean) {
-            if (exc instanceof KnownError) {
-              return `Command failed:\\n${exc.message}`;
-            }
-            const detail =
-              exc instanceof Error
-                ? (exc.stack ?? exc.message)
-                : JSON.stringify(exc, null, 2);
-            return `An unexpected error occurred. Please report it as a bug on https://github.com/YoYoGames/gm-cli/issues\\nGM-CLI v${version} ${process.platform}/${process.arch}\\n\\n${detail}`;
-          },
-        };
-      },
-    },
+export const app = buildApplication(routes, {
+  name: "gm-cli",
+  versionInfo: {
+    currentVersion: version,
+    getLatestVersion,
+    upgradeCommand: "npm install -g @gamemaker/gm-cli",
   },
-  {
-    help: help({
-      brief: text_en.briefs.help,
-      alias: "h",
-      defaultForRouteMap: true,
-      includeHidden: false,
-      formatting: {
-        caseStyle: "convert-camel-to-kebab",
-        onlyRequiredInUsageLine: true,
-      },
-    }),
-    helpAll: help({
-      brief: text_en.briefs.helpAll,
-      alias: "H",
-      hidden: true,
-      includeHidden: true,
-      formatting: {
-        caseStyle: "convert-camel-to-kebab",
-        onlyRequiredInUsageLine: true,
-      },
-    }),
-    version: stricliVersion({
-      brief: text_en.briefs.version,
-      info: {
-        currentVersion: version,
-        getLatestVersion,
-        upgradeCommand: "npm install -g @gamemaker/gm-cli",
-      },
-      alias: "v",
-      hook: "app:start",
-    }),
-    plainOutput: {
-      flag: {
-        brief: "Use plain output.",
-        global: true,
-        run() {
-          (this as Context).makeTaskLogger = plainTaskLogger();
+  documentation: {
+    caseStyle: "convert-camel-to-kebab",
+    onlyRequiredInUsageLine: true,
+  },
+  scanner: {
+    caseStyle: "allow-kebab-for-camel",
+  },
+  localization: {
+    loadText() {
+      return {
+        ...text_en,
+        exceptionWhileRunningCommand(exc: unknown, _ansiColor: boolean) {
+          if (exc instanceof KnownError) {
+            return `Command failed:\n${exc.message}`;
+          }
+          const detail =
+            exc instanceof Error
+              ? (exc.stack ?? exc.message)
+              : JSON.stringify(exc, null, 2);
+          return `An unexpected error occurred. Please report it as a bug on https://github.com/YoYoGames/gm-cli/issues\nGM-CLI v${version} ${process.platform}/${process.arch}\n\n${detail}`;
         },
-      },
+      };
     },
   },
-);
+});
