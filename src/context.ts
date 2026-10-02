@@ -50,7 +50,10 @@ export async function exists(
   }
 }
 
-export function buildContext(\n  process: NodeJS.Process,\n  plainOutput = false,\n): Context {
+export function buildContext(
+  process: NodeJS.Process,
+  plainOutput = false,
+): Context {
   const env = getParsedEnv();
   return {
     process,
@@ -63,6 +66,8 @@ export function buildContext(\n  process: NodeJS.Process,\n  plainOutput = false
     path,
     fetch,
     makeTaskLogger:
-      plainOutput || env.NO_COLOR === true\n        ? plainTaskLogger()\n        : fancyTaskLogger(),
+      plainOutput || env.NO_COLOR === true
+        ? plainTaskLogger()
+        : fancyTaskLogger(),
   };
 }
