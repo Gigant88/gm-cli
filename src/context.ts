@@ -34,7 +34,7 @@ export interface Context extends CommandContext {
   readonly fetch: typeof globalThis.fetch;
   readonly open: typeof open;
   readonly http: typeof http;
-  readonly makeTaskLogger: TaskLogger;
+  makeTaskLogger: TaskLogger;
   readonly env: ParsedEnv;
 }
 
