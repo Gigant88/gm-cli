@@ -242,7 +242,9 @@ export async function installRuntimeIfNeeded(
     try {
       installedModules = await getInstalledRuntimeModules(ctx, runtimeLocation);
     } catch {
-      log.message(`Cached runtime at '${runtimeLocation}' is invalid; reinstalling...`);
+      log.message(
+        `Cached runtime at '${runtimeLocation}' is invalid; reinstalling...`,
+      );
       await ctx.fs.rm(runtimeLocation, { recursive: true, force: true });
       runtimeLocation = undefined;
     }
